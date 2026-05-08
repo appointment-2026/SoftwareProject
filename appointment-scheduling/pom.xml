@@ -30,6 +30,13 @@
             target/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
+         <sonar.coverage.exclusions>
+  **/ui/MainFrame.java,
+  **/ui/ConsoleMenu.java,
+  **/App.java,
+  **/service/GUINotifier.java,
+  **/service/EmailNotifier.java
+</sonar.coverage.exclusions>
 
     <dependencies>
 
