@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -10,27 +10,37 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <!-- Java -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Dependencies versions -->
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.12.0</mockito.version>
         <jacoco.version>0.8.12</jacoco.version>
-           
-  <sonar.organization>appointment-2026</sonar.organization>
 
+        <!-- SonarCloud -->
+        <sonar.organization>appointment-2026</sonar.organization>
+        <sonar.projectKey>appointment-2026_SoftwareProject</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <!-- JaCoCo XML report path for SonarCloud coverage -->
+        <sonar.coverage.jacoco.xmlReportPaths>
+            target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
 
-        <!-- Jakarta Mail (email notifications) -->
+        <!-- Jakarta Mail: email notifications -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
             <version>2.0.1</version>
         </dependency>
 
-        <!-- JUnit 5 -->
+        <!-- JUnit 5: unit testing framework -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -38,7 +48,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Mockito Core -->
+        <!-- Mockito Core: mocking framework -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -52,36 +62,33 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
-     
         </dependency>
-<dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>5.12.0</version>
-        <scope>test</scope>
-    </dependency>
 
     </dependencies>
 
     <build>
         <plugins>
 
-            <!-- Maven Surefire – runs JUnit 5 tests -->
+            <!-- Maven Surefire: runs JUnit 5 tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
             </plugin>
 
-            <!-- JaCoCo – code coverage -->
+            <!-- JaCoCo: generates code coverage report -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+
                 <configuration>
                     <!-- Exclude UI, entry-point, and infrastructure adapters
                          that require a live display/SMTP server and cannot
-                         be exercised via pure unit tests. -->
+                         be exercised through pure unit tests. -->
                     <excludes>
                         <exclude>com/team/appointment/ui/**</exclude>
                         <exclude>com/team/appointment/App.class</exclude>
@@ -90,22 +97,29 @@
                         <exclude>com/team/appointment/service/ConsoleNotifier.class</exclude>
                     </excludes>
                 </configuration>
+
                 <executions>
+                    <!-- Attach JaCoCo Java agent before tests run -->
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
+                    <!-- Generate JaCoCo XML/HTML reports after tests -->
                     <execution>
                         <id>report</id>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <!-- Enforce >80% coverage on service + model classes -->
+
+                    <!-- Enforce minimum coverage -->
                     <execution>
                         <id>check</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -124,10 +138,11 @@
                             </rules>
                         </configuration>
                     </execution>
+
                 </executions>
             </plugin>
 
-            <!-- Maven JAR – sets main class for executable JAR -->
+            <!-- Maven JAR: sets main class for executable JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
