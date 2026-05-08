@@ -18,22 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Show repository files
-        run: |
-          echo "Current directory:"
-          pwd
-
-          echo "Files in root:"
-          ls -la
-
-          echo "Searching for pom.xml:"
-          find . -name "pom.xml" -type f
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: zulu
+          cache: maven
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
@@ -42,28 +32,12 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Build, test, coverage, and SonarCloud analysis
+      - name: Build, test, and SonarCloud analysis
+        working-directory: appointment-scheduling
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          POM_PATH=$(find . -name "pom.xml" -type f | head -n 1)
-
-          if [ -z "$POM_PATH" ]; then
-            echo "ERROR: No pom.xml was found in this repository."
-            echo "This means the Maven project is not uploaded to GitHub correctly."
-            exit 1
-          fi
-
-          echo "Using pom.xml at: $POM_PATH"
-
-          mvn -B -f "$POM_PATH" clean verify sonar:sonar \
+          mvn -B clean verify sonar:sonar \
             -Dsonar.projectKey=appointment-2026_SoftwareProject \
             -Dsonar.organization=appointment-2026 \
             -Dsonar.host.url=https://sonarcloud.io
