@@ -49,13 +49,14 @@ public class MainFrame extends JFrame {
     private static final int FIELD_WIDTH  = 520;
     private static final int FIELD_HEIGHT = 42;
     private static final int LABEL_WIDTH  = 200;
+    
+    
+    private transient final AuthService authService = new AuthService();
+    private transient final SlotService slotService = new SlotService();
+    private transient final BookingService bookingService = new BookingService(slotService);
 
-    private final AuthService         authService    = new AuthService();
-    private final SlotService         slotService    = new SlotService();
-    private final BookingService      bookingService = new BookingService(slotService);
-    private       GUINotifier         guiNotifier;
-    private       NotificationService notificationService;
-
+    private transient GUINotifier guiNotifier;
+    private transient NotificationService notificationService;
     private User currentUser = null;
 
     private final CardLayout cardLayout = new CardLayout();
