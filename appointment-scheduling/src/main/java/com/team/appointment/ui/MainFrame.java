@@ -17,7 +17,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-
+import javax.swing.ScrollPaneConstants;
 /**
  * Main application window for the Appointment Scheduling System.
  * Provides a tabbed GUI for booking, modifying, cancelling appointments,
@@ -57,6 +57,9 @@ public class MainFrame extends JFrame {
 
     private transient GUINotifier guiNotifier;
     private transient NotificationService notificationService;
+   
+    
+    
     private User currentUser = null;
 
     private final CardLayout cardLayout = new CardLayout();
@@ -571,9 +574,12 @@ public class MainFrame extends JFrame {
         addRow(form, 0, "Select Booked Slot :", cancelSlotCombo);
         addButtonRow(form, 1, cancelBtn, cancelStatusLabel);
 
-        panel.add(new JScrollPane(form, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
-        return panel;
+        panel.add(new JScrollPane(
+        	    form,
+        	    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        	    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        	), BorderLayout.CENTER);
+		return form;
     }
 
     /** Cancels the selected booked slot and refreshes the UI. */
